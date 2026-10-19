@@ -1,0 +1,35 @@
+[project]
+name = "self-improving-harness"
+version = "0.1.0"
+description = "Experiments with recursive agent harnessing (Harness²): an agent that rewrites its own harness."
+readme = "README.md"
+authors = [
+    { name = "varma443517", email = "285471839+varma443517@users.noreply.github.com" }
+]
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    # Pinned to an exact commit: research code moves fast, and results must be reproducible.
+    "harness2 @ git+https://github.com/google-research/harness2@1cfe254e8d25b15f37048c3730134686abe60335",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
+
+# Scripts and tests only for now -- nothing to build or publish.
+[tool.uv]
+package = false
+
+# ---- tools -------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F = pycodestyle + pyflakes basics, I = import order, B = likely bugs, UP = modern syntax
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

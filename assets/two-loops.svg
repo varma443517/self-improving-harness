@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>Harness²: an inner loop improves the harness for one task; an outer loop carries evidence-backed lessons to the next task.</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3A3F4B"/>
+    </marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B86E00"/>
+    </marker>
+    <style>
+      .box  { fill:#FFFFFF; stroke-width:2.5; }
+      .coach{ stroke:#7B52C9; }
+      .work { stroke:#1F9A8A; }
+      .file { stroke:#5B6475; }
+      .h    { font-size:13.5px; font-weight:700; fill:#1E2330; }
+      .s    { font-size:11.5px; fill:#4A5162; }
+      .step { font-size:11.5px; font-weight:700; }
+      .ln   { stroke:#3A3F4B; stroke-width:2; fill:none; marker-end:url(#ah); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1110" height="560" rx="22" fill="#FFFFFF"/>
+  <text x="40" y="46" font-size="21" font-weight="700" fill="#1E2330">Harness²: a coach model rewrites the worker's harness</text>
+  <text x="40" y="70" font-size="13.5" fill="#5B6475">The worker model never changes. Only the files around it do, and every change is tested by running it.</text>
+
+  <!-- ============ Inner loop ============ -->
+  <rect x="30" y="92" width="1050" height="262" rx="18" fill="#EAF2FF" stroke="#A9C3F5" stroke-width="1.5"/>
+  <text x="52" y="120" font-size="15" font-weight="700" fill="#2F5FD0">Inner loop: improve the harness for this task</text>
+
+  <!-- base harness -->
+  <rect class="box file" x="50" y="150" width="145" height="104" rx="14"/>
+  <path d="M68 170 h16 l5 6 h25 v26 h-46 z" fill="#E4E8F0" stroke="#5B6475" stroke-width="1.5"/>
+  <text class="h" x="64" y="226">Base harness</text>
+  <text class="s" x="64" y="243">8 editable files</text>
+
+  <!-- 1 propose -->
+  <text class="step" x="231" y="143" fill="#7B52C9">1 · Propose</text>
+  <rect class="box coach" x="228" y="150" width="185" height="48" rx="12"/>
+  <text class="h" x="242" y="170">INV editor</text>
+  <text class="s" x="242" y="187">how the agent works</text>
+  <rect class="box coach" x="228" y="206" width="185" height="48" rx="12"/>
+  <text class="h" x="242" y="226">DOM editor</text>
+  <text class="s" x="242" y="243">what an expert knows</text>
+
+  <!-- 2 probe -->
+  <text class="step" x="449" y="143" fill="#1F9A8A">2 · Probe</text>
+  <rect class="box work" x="446" y="150" width="185" height="104" rx="14"/>
+  <g stroke="#1F9A8A" stroke-width="1.3">
+    <rect x="462" y="164" width="34" height="24" rx="4" fill="#DDF3EF"/>
+    <rect x="504" y="164" width="34" height="24" rx="4" fill="#DDF3EF"/>
+    <rect x="546" y="164" width="34" height="24" rx="4" fill="#DDF3EF"/>
+  </g>
+  <g fill="#1F9A8A">
+    <path d="M474 170 l9 6 l-9 6 z"/><path d="M516 170 l9 6 l-9 6 z"/><path d="M558 170 l9 6 l-9 6 z"/>
+  </g>
+  <text class="h" x="462" y="216">Run each candidate</text>
+  <text class="s" x="462" y="233">on the same task, then</text>
+  <text class="s" x="462" y="248">compare the transcripts</text>
+
+  <!-- 3 compose -->
+  <text class="step" x="667" y="143" fill="#7B52C9">3 · Compose</text>
+  <rect class="box coach" x="664" y="150" width="175" height="104" rx="14"/>
+  <path d="M680 166 q14 0 20 11 q6 11 20 11 M680 192 q14 0 20 -7" fill="none" stroke="#7B52C9" stroke-width="2"/>
+  <text class="h" x="680" y="216">Merge the edits</text>
+  <text class="s" x="680" y="233">that made a visible</text>
+  <text class="s" x="680" y="248">difference</text>
+
+  <!-- 4 select -->
+  <text class="step" x="875" y="143" fill="#7B52C9">4 · Select</text>
+  <rect class="box coach" x="872" y="150" width="185" height="104" rx="14"/>
+  <g font-size="12" font-weight="700" fill="#7B52C9">
+    <rect x="888" y="164" width="24" height="22" rx="5" fill="#F1EBFB"/><text x="895" y="180">A</text>
+    <rect x="918" y="164" width="24" height="22" rx="5" fill="#F1EBFB"/><text x="925" y="180">B</text>
+    <rect x="948" y="164" width="24" height="22" rx="5" fill="#F1EBFB"/><text x="955" y="180">C</text>
+  </g>
+  <text class="h" x="888" y="216">Blind pick</text>
+  <text class="s" x="888" y="233">labels hidden, so the</text>
+  <text class="s" x="888" y="248">judge can't play favourites</text>
+
+  <!-- inner arrows -->
+  <path class="ln" d="M195 202 H224"/>
+  <path class="ln" d="M413 202 H442"/>
+  <path class="ln" d="M631 202 H660"/>
+  <path class="ln" d="M839 202 H868"/>
+
+  <!-- guard notes -->
+  <rect x="446" y="274" width="185" height="56" rx="10" fill="#FFFFFF" stroke="#1F9A8A" stroke-dasharray="4 3"/>
+  <text class="s" x="460" y="296">No answer key: learns from</text>
+  <text class="s" x="460" y="313">differences between runs</text>
+  <rect x="664" y="274" width="175" height="56" rx="10" fill="#FFFFFF" stroke="#C2453A" stroke-dasharray="4 3"/>
+  <text class="s" x="678" y="296">Broken edit → 1 retry,</text>
+  <text class="s" x="678" y="313">else keep the old harness</text>
+
+  <!-- ============ Outer loop ============ -->
+  <rect x="30" y="372" width="1050" height="166" rx="18" fill="#FFF4E0" stroke="#F0C27A" stroke-width="1.5"/>
+  <text x="52" y="400" font-size="15" font-weight="700" fill="#B86E00">Outer loop: lessons for the next task</text>
+
+  <rect class="box file" x="232" y="420" width="268" height="88" rx="14"/>
+  <path d="M250 438 h10 v40 h-10 z M264 438 h10 v40 h-10 z M278 441 l9 -3 l11 38 l-9 3 z" fill="#FBE3B8" stroke="#B86E00" stroke-width="1.3"/>
+  <text class="h" x="310" y="446">Library, per domain</text>
+  <text class="s" x="310" y="465">full winning harness</text>
+  <text class="s" x="310" y="482">+ why it won (EXPERIENCE.md)</text>
+
+  <rect class="box coach" x="664" y="420" width="210" height="88" rx="14"/>
+  <text class="h" x="680" y="446">Reflect</text>
+  <text class="s" x="680" y="465">cue · lesson · evidence</text>
+  <text class="s" x="680" y="483" fill="#C2453A">no evidence → no lesson</text>
+
+  <!-- select → reflect → library -->
+  <path class="ln" d="M1000 254 V464 H878"/>
+  <path class="ln" d="M664 464 H504"/>
+  <!-- library → next task's editors (dashed) -->
+  <path d="M390 420 V258" fill="none" stroke="#B86E00" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#ahd)"/>
+  <text class="s" x="380" y="298" text-anchor="end" fill="#B86E00" font-weight="700">next task's editors</text>
+  <text class="s" x="380" y="314" text-anchor="end" fill="#B86E00" font-weight="700">read it first</text>
+
+  <!-- legend -->
+  <rect x="52" y="430" width="14" height="14" rx="3" fill="#FFFFFF" stroke="#7B52C9" stroke-width="2.5"/>
+  <text class="s" x="74" y="442">coach model</text>
+  <rect x="52" y="456" width="14" height="14" rx="3" fill="#FFFFFF" stroke="#1F9A8A" stroke-width="2.5"/>
+  <text class="s" x="74" y="468">worker model (frozen)</text>
+  <rect x="52" y="482" width="14" height="14" rx="3" fill="#FFFFFF" stroke="#5B6475" stroke-width="2.5"/>
+  <text class="s" x="74" y="494">files on disk</text>
+</svg>
