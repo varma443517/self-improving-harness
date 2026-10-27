@@ -152,14 +152,6 @@ editor costs a turn, not the result: the composition still picked up `dom1`'s fi
   case), and a wrong premise shared by every candidate leaves nothing to contrast, so it spreads
   instead of getting fixed.
 
-## Next
-
-- **A real coach.** Swap `ScriptedCoach` for a model through Harness²'s `claude_cli` or
-  OpenCode channel, run it in a container (the editor runs with permissions skipped), and record
-  base vs refined, parallel vs sequential, with the cost of each.
-- **Harder tasks.** Weaknesses a single script edit cannot fix, where a skill or a check script
-  has to be added.
-
 ## Credits and licence
 
 Harness² is by Xu, Chen, CuiZhu, Dalvi Mishra, Ming, Yu, Han, Lee and Pfister at Google Research,
