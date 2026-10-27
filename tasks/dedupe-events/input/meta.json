@@ -1,0 +1,4 @@
+{
+  "id": "dedupe-events",
+  "script": "scripts/dedupe_events.py"
+}

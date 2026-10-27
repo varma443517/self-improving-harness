@@ -1,0 +1,4 @@
+{
+  "id": "null-revenue",
+  "script": "scripts/revenue_stats.py"
+}

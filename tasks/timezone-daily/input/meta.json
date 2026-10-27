@@ -1,0 +1,5 @@
+{
+  "id": "timezone-daily",
+  "script": "scripts/daily_counts.py",
+  "timezone": "America/Chicago"
+}

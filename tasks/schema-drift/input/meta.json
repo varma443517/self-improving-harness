@@ -1,0 +1,4 @@
+{
+  "id": "schema-drift",
+  "script": "scripts/load_daily.py"
+}

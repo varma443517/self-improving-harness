@@ -10,6 +10,7 @@ requires-python = ">=3.12,<3.14"
 dependencies = [
     # Pinned to an exact commit: research code moves fast, and results must be reproducible.
     "harness2 @ git+https://github.com/google-research/harness2@1cfe254e8d25b15f37048c3730134686abe60335",
+    "pandas>=2.2",
 ]
 
 [dependency-groups]
@@ -18,9 +19,16 @@ dev = [
     "ruff>=0.16.9",
 ]
 
-# Scripts and tests only for now -- nothing to build or publish.
-[tool.uv]
-package = false
+# Installed in editable mode by `uv sync`, so experiments and tests can import harness_lab.
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["harness_lab"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 # ---- tools -------------------------------------------------------------
 [tool.ruff]

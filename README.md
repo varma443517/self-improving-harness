@@ -1,21 +1,74 @@
 # self-improving-harness
 
-Experiments with **recursive agent harnessing**: a strong *coach* model rewrites the prompts,
-skills, scripts and memory around a frozen *worker* model, tests every change by running it,
-and saves evidence-backed lessons for the next task. No answer key is involved.
+Data pipelines that get better without retraining a model. A *coach* rewrites the scripts,
+prompts and memory around a frozen *worker*, tests every change by running it, and saves
+evidence-backed lessons for the next task. No answer key is used while it learns.
 
-It's built on [Harness²](https://github.com/google-research/harness2) from Google Research
-([paper](https://arxiv.org/abs/2610.14224)), pinned to an exact commit. Everything here runs
-offline on a laptop with no model and no API keys.
+The loop is [Harness²](https://github.com/google-research/harness2) from Google Research
+([paper](https://arxiv.org/abs/2610.14224)), pinned to an exact commit. This repo plugs five
+data-engineering tasks into it through an adapter, and shows where the method works and where it
+breaks. Everything runs offline on a laptop, with no model and no API keys.
 
-![Harness² inner and outer loop](assets/two-loops.svg)
+<p align="center"><img src="assets/architecture.svg" alt="Architecture: five data tasks feed a DataAdapter that plugs into the Harness² loop. INV and DOM editors propose, the worker probes each candidate, a composer merges, a blind selector picks one final, a reflector saves a lesson to the library that the next task reads first. Answer files sit behind a wall and are read only after selection." width="640"></p>
 
 ```bash
-make install      # uv sync: Harness² (pinned) + pytest + ruff
-make demo         # Harness²'s offline demo, both recursion modes
+make install      # uv sync: Harness² (pinned), pandas, pytest, ruff
+make bench        # five data tasks: base harness vs refined, scored after the loop
+make blind-spot   # a mistake every editor shares, then a lesson that fixes it
+make demo         # Harness²'s own offline demo, both recursion modes
 make experiment   # an editor that breaks the harness on purpose
-make test         # the experiment as assertions
+make test         # all of it as assertions (17 tests)
 ```
+
+## Results: five data tasks
+
+Each task starts from a harness whose pipeline script has one realistic weakness. `make bench`
+runs them in order through one shared library (parallel mode, k = 1) and scores two runs per
+task, only after Harness² has picked its final:
+
+| task | planted weakness | base harness | after Harness² | lesson saved (cue) |
+|---|---|---|---|---|
+| `orders-join` | `INNER JOIN` drops customers with no orders | ✗ 4 of 5 rows | ✓ | When a report must list every customer, including ones with no orders |
+| `dedupe-events` | dedupes on `event_id`; resent events get new ids | ✗ double-counted payment | ✓ | When an event log contains events resent with a new event_id |
+| `schema-drift` | day 2 renamed `amount` to `amount_usd` | ✗ `KeyError`, no output | ✓ | When a daily file arrives with a renamed column |
+| `null-revenue` | blanks filled with 0 before averaging | ✗ average 60 | ✓ 100 | When a numeric column has blank values |
+| `timezone-daily` | groups by UTC date for a Chicago store | ✗ 1 day | ✓ 2 days | When counting events per business day for a store |
+
+Every task cost **4 worker runs and 3 editor sessions** (base, INV candidate, DOM candidate,
+composition). The library grew by one lesson per task, and each lesson cites the contrast that
+earned it, for example: *base1 gave 4 rows; agg1 gave 5 rows (…C5,Eli,0.00)*.
+
+**What this does and does not show.** The coach here is scripted: it already knows the five
+fixes ([`harness_lab/fixes.py`](harness_lab/fixes.py)), so the results test Harness²'s loop
+(validation, probing, composition, selection, reflection, the library and the answer wall), not
+a model's ability to find the fixes. A real model as coach is the next step.
+
+## Where it breaks, on purpose
+
+`make blind-spot` runs three join tasks with a coach that never thinks of `LEFT JOIN`:
+
+| task | what the editors did | result | lesson |
+|---|---|---|---|
+| `orders-join-a` | every run keeps `INNER JOIN`, so every run agrees | ✗ | none: no contrast, `NO_ENTRY` |
+| `orders-join-b` | one DOM editor tries `LEFT JOIN` (4 rows vs 3) | ✓ | saved |
+| `orders-join-c` | still blind, but reads the cue from task b in the library | ✓ | saved |
+
+This is the paper's failure mode, a wrong premise shared by every candidate, and its remedy, the
+outer loop. Harness² improves only where runs differ.
+
+## How the pieces fit
+
+| file | job |
+|---|---|
+| [`harness_lab/adapter.py`](harness_lab/adapter.py) | `DataAdapter`: the 12 methods Harness² calls, in five jobs (what is the work, where the agent starts, run it, what happened, was it right) |
+| [`harness_lab/coach.py`](harness_lab/coach.py) | `ScriptedCoach`: plays editor, composer, selector and reflector, reading the same evidence folders a model would |
+| [`harness_lab/fixes.py`](harness_lab/fixes.py) | the five weaknesses, each fix's lane (INV or DOM), cue and lesson |
+| [`harness_lab/bench.py`](harness_lab/bench.py) | runs the loop, then scores base vs final |
+| [`base_harness/`](base_harness) | the starting harness: four always-on files and five pipeline scripts |
+| [`tasks/`](tasks), [`answers/`](answers) | inputs and prompts; answers are read only by `score()` |
+
+The wall between the loop and the answers is tested, not just promised:
+`test_score_is_never_called_inside_the_loop` makes `score()` raise, and the loop still finishes.
 
 ## The idea in four sentences
 
@@ -33,7 +86,7 @@ Two editor roles run side by side and stay in their own lane:
 | Fixes | tool errors, repeated mechanical steps, ignored rules | missing domain checks, deliverable structure |
 | Usual form | `scripts/check_x.py`, a fallback-and-stop rule | a skill with a trigger |
 
-## What the offline demo shows
+## Harness²'s own demo
 
 The demo task: sum a ledger of signed amounts. The starting harness has a bug: its script only
 adds positive amounts. Here are the answers from `make demo` (`--k 2`; *agg* is parallel
@@ -99,14 +152,13 @@ editor costs a turn, not the result: the composition still picked up `dom1`'s fi
   case), and a wrong premise shared by every candidate leaves nothing to contrast, so it spreads
   instead of getting fixed.
 
-## Roadmap
+## Next
 
-- **Data-engineering tasks:** a Harness² adapter for SQL and pipeline work (a join that drops
-  rows, CSV deduplication, schema drift), each with a starting harness that has a known weakness.
-- **A real coach:** run the same tasks with an LLM editor and compare base vs refined, and
-  parallel vs sequential, with the cost of each.
-- **Where it breaks, on purpose:** a shared blind spot (every candidate keeps the same wrong
-  `INNER JOIN`, so no lesson is written) and a cost ledger per task.
+- **A real coach.** Swap `ScriptedCoach` for a model through Harness²'s `claude_cli` or
+  OpenCode channel, run it in a container (the editor runs with permissions skipped), and record
+  base vs refined, parallel vs sequential, with the cost of each.
+- **Harder tasks.** Weaknesses a single script edit cannot fix, where a skill or a check script
+  has to be added.
 
 ## Credits and licence
 

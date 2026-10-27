@@ -1,0 +1,4 @@
+{
+  "id": "orders-join-b",
+  "script": "scripts/join_report.py"
+}
